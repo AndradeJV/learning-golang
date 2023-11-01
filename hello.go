@@ -59,7 +59,14 @@ func showMenu() {
 func startMonitoring(){
 	fmt.Println("MONITORAMENTO INICIADO")
 
-	site := "https://www.mercadolivre.com.br/"
+	var sites [4]string
+
+	sites[0] = "https://www.mercadolivre.com.br"
+	sites[1] = "https://www.mercadolivre.com.br/naoacessa"
+	sites[2] = "https://www.google.com.br"
+	sites[3] = "https://www.facebook.com"
+
+	site := "https://www.mercadolivre.com.br"
 	resp, _ := http.Get(site)
 
 	if resp.StatusCode == 200 {
