@@ -75,3 +75,10 @@ func startMonitoring(){
 		fmt.Println("Site: ", site, "está apresentando problemas. Erro: ", resp.StatusCode)
 	}
 }
+
+
+func showNames() {
+	nomes := []string {"João", "José"}
+
+	fmt.Println(nomes )
+}
