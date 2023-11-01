@@ -119,5 +119,7 @@ func readSitesFile() []string {
 		}
 	}
 
+	file.Close()
+
 	return sites
 }
