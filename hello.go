@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"time"
+	"strconv"
 )
 
 const monitoring = 3
@@ -14,7 +15,7 @@ const delay = 5
 
 func main() {
 	niceToMeetYou()
-
+	// logRegister("site-falso", false)
 	for {
 		showMenu()
 		chose := readCommand()
@@ -92,8 +93,12 @@ func siteTest(site string) {
 
 	if resp.StatusCode == 200 {
 		fmt.Println("Site: ", site, "foi carregado com sucesso")
+
+		logRegister(site, true)
 	} else {
 		fmt.Println("Site: ", site, "está apresentando problemas. Erro: ", resp.StatusCode)
+	
+		logRegister(site, false)
 	}
 }
 
@@ -122,4 +127,17 @@ func readSitesFile() []string {
 	file.Close()
 
 	return sites
+}
+
+
+func logRegister(site string, status bool){
+	file, err := os.OpenFile("./logs/logs.txt", os.O_RDWR | os.O_CREATE, 0666)
+
+	if err != nil {
+		fmt.Println("Erro:", err)
+	}
+
+	file.WriteString(site + " - online: " + strconv.FormatBool(status))
+
+	file.Close()
 }
