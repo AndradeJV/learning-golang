@@ -1,15 +1,16 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
-	"os"
+	"io"
 	"net/http"
+	"os"
 	"time"
 )
 
 const monitoring = 3
 const delay = 5
-
 
 func main() {
 	niceToMeetYou()
@@ -17,7 +18,7 @@ func main() {
 	for {
 		showMenu()
 		chose := readCommand()
-	
+
 		switch chose {
 		case 1:
 			startMonitoring()
@@ -25,11 +26,11 @@ func main() {
 			fmt.Println("EXIBINDO LOGS")
 		case 3:
 			fmt.Println("SESSÃO FINALIZADA")
-	
+
 			os.Exit(0)
 		default:
 			fmt.Println("Comando não existe!")
-	
+
 			os.Exit(-1)
 		}
 	}
@@ -61,16 +62,17 @@ func showMenu() {
 	fmt.Println("3- Finalizar sessão")
 }
 
-
-func startMonitoring(){
+func startMonitoring() {
 	fmt.Println("MONITORAMENTO INICIADO")
 
-	sites := []string{"https://www.mercadolivre.com.br", "https://www.mercadolivre.com.br/naoacessa"}
+	// sites := []string{"https://www.mercadolivre.com.br", "https://www.mercadolivre.com.br/naoacessa"}
 
-	for i:= 0; i < monitoring; i++ {
+	sites := readSitesFile()
+
+	for i := 0; i < monitoring; i++ {
 		for index, site := range sites {
 			fmt.Println("Posição: ", index, "Site: ", site)
-	
+
 			siteTest(site)
 		}
 
@@ -81,13 +83,41 @@ func startMonitoring(){
 	fmt.Println("")
 }
 
+func siteTest(site string) {
+	resp, err := http.Get(site)
 
-func siteTest(site string){
-	resp, _ := http.Get(site)
+	if err != nil {
+		fmt.Println("Erro:", err)
+	}
 
 	if resp.StatusCode == 200 {
 		fmt.Println("Site: ", site, "foi carregado com sucesso")
 	} else {
 		fmt.Println("Site: ", site, "está apresentando problemas. Erro: ", resp.StatusCode)
 	}
+}
+
+func readSitesFile() []string {
+	var sites []string
+
+	file, err := os.Open("./data/sites.txt")
+
+	if err != nil {
+		fmt.Println("Ocorreu um erro", err)
+	}
+
+	for {
+		reader := bufio.NewReader(file)
+		line, err := reader.ReadString('\n')
+
+		sites = append(sites, line)
+
+		fmt.Println(line)
+
+		if err == io.EOF {
+			break
+		}
+	}
+
+	return sites
 }
