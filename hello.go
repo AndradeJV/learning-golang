@@ -4,10 +4,15 @@ import (
 	"fmt"
 	"os"
 	"net/http"
+	"time"
 )
 
+const monitoring = 3
+const delay = 5
+
+
 func main() {
-	//niceToMeetYou()
+	niceToMeetYou()
 
 	for {
 		showMenu()
@@ -45,6 +50,7 @@ func readCommand() int {
 
 	fmt.Scan(&chose)
 	fmt.Println("The commnad chosen was:", chose)
+	fmt.Println("")
 
 	return chose
 }
@@ -59,14 +65,24 @@ func showMenu() {
 func startMonitoring(){
 	fmt.Println("MONITORAMENTO INICIADO")
 
-	var sites [4]string
+	sites := []string{"https://www.mercadolivre.com.br", "https://www.mercadolivre.com.br/naoacessa"}
 
-	sites[0] = "https://www.mercadolivre.com.br"
-	sites[1] = "https://www.mercadolivre.com.br/naoacessa"
-	sites[2] = "https://www.google.com.br"
-	sites[3] = "https://www.facebook.com"
+	for i:= 0; i < monitoring; i++ {
+		for index, site := range sites {
+			fmt.Println("Posição: ", index, "Site: ", site)
+	
+			siteTest(site)
+		}
 
-	site := "https://www.mercadolivre.com.br"
+		time.Sleep(delay * time.Second)
+		fmt.Println("")
+	}
+
+	fmt.Println("")
+}
+
+
+func siteTest(site string){
 	resp, _ := http.Get(site)
 
 	if resp.StatusCode == 200 {
@@ -74,11 +90,4 @@ func startMonitoring(){
 	} else {
 		fmt.Println("Site: ", site, "está apresentando problemas. Erro: ", resp.StatusCode)
 	}
-}
-
-
-func showNames() {
-	nomes := []string {"João", "José"}
-
-	fmt.Println(nomes )
 }
